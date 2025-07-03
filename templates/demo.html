@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedPharm AI Widget Demo - Embeddable Medical Assistant</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            color: #2d3748;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+        
+        .hero-description {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .main-content {
+            padding: 80px 0;
+        }
+        
+        .section {
+            margin-bottom: 80px;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #718096;
+            text-align: center;
+            margin-bottom: 50px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #48bb78 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+        
+        .feature-description {
+            color: #718096;
+            line-height: 1.6;
+        }
+        
+        .code-section {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 50px;
+        }
+        
+        .code-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 25px;
+            border-radius: 12px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        .copy-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #4a5568;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.2s;
+        }
+        
+        .copy-button:hover {
+            background: #2d3748;
+        }
+        
+        .demo-section {
+            text-align: center;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border-radius: 16px;
+            border: 2px dashed #cbd5e0;
+        }
+        
+        .demo-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+        
+        .demo-description {
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .activate-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .activate-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .pricing-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        
+        .pricing-card.featured {
+            border: 2px solid #667eea;
+            transform: scale(1.05);
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .pricing-card.featured:hover {
+            transform: translateY(-5px) scale(1.05);
+        }
+        
+        .plan-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+        
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .plan-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+        
+        .plan-features li {
+            padding: 8px 0;
+            color: #718096;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .plan-features li::before {
+            content: '✓';
+            color: #48bb78;
+            font-weight: bold;
+        }
+        
+        .plan-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .plan-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .featured-badge {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #667eea;
+            color: white;
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .footer {
+            background: #2d3748;
+            color: white;
+            text-align: center;
+            padding: 50px 0;
+            margin-top: 80px;
+        }
+        
+        .footer-content {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-links a {
+            color: #a0aec0;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-card.featured {
+                transform: none;
+            }
+            
+            .pricing-card.featured:hover {
+                transform: translateY(-5px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1 class="hero-title">
+                <i class="fas fa-pills"></i>
+                MedPharm AI Widget
+            </h1>
+            <p class="hero-subtitle">Embeddable Medical & Pharmacy Assistant</p>
+            <p class="hero-description">
+                Transform any website into a smart medical resource with our AI-powered pharmacy assistant. 
+                Easy to integrate, powerful to use, trusted by healthcare professionals.
+            </p>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="container">
+            
+            <section class="section">
+                <h2 class="section-title">Why Choose MedPharm AI?</h2>
+                <p class="section-subtitle">
+                    Designed specifically for healthcare websites, pharmacies, and medical practices
+                </p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-pills"></i>
+                        </div>
+                        <h3 class="feature-title">Drug Interactions</h3>
+                        <p class="feature-description">
+                            Real-time checking for dangerous drug interactions, contraindications, and safety warnings.
+                        </p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <h3 class="feature-title">Dosage Calculator</h3>
+                        <p class="feature-description">
+                            Accurate dosage calculations based on patient weight, age, and medical conditions.
+                        </p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Safety Compliance</h3>
+                        <p class="feature-description">
+                            HIPAA-compliant, secure, and includes proper medical disclaimers for liability protection.
+                        </p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Responsive Design</h3>
+                        <p class="feature-description">
+                            Works perfectly on desktop, tablet, and mobile devices with a beautiful interface.
+                        </p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                        <h3 class="feature-title">Customizable</h3>
+                        <p class="feature-description">
+                            Match your brand colors, position, and messaging. White-label options available.
+                        </p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3 class="feature-title">Instant Setup</h3>
+                        <p class="feature-description">
+                            Add our widget to any website in under 5 minutes with just a few lines of code.
+                        </p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2 class="section-title">Integration Made Simple</h2>
+                <p class="section-subtitle">
+                    Add our widget to your website with just a few lines of code
+                </p>
+                
+                <div class="code-section">
+                    <h3 class="code-title">
+                        <i class="fas fa-code"></i>
+                        Basic Integration
+                    </h3>
+                    <div class="code-block">
+                        <button class="copy-button" onclick="copyCode('basic-code')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                        <div id="basic-code">&lt;!-- Add to your website's HTML --&gt;
+&lt;script src="https://your-domain.com/embed.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  MedPharmAI.init({
+    apiKey: 'your-api-key',
+    position: 'bottom-right',
+    title: 'Medical Assistant',
+    subtitle: 'Ask about medications'
+  });
+&lt;/script&gt;</div>
+                    </div>
+                </div>
+                
+                <div class="code-section">
+                    <h3 class="code-title">
+                        <i class="fas fa-paint-brush"></i>
+                        Custom Styling
+                    </h3>
+                    <div class="code-block">
+                        <button class="copy-button" onclick="copyCode('custom-code')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                        <div id="custom-code">MedPharmAI.init({
+  apiKey: 'your-api-key',
+  position: 'bottom-left',
+  title: 'Your Pharmacy Assistant',
+  subtitle: 'How can I help you today?',
+  primaryColor: '#your-brand-color',
+  accentColor: '#your-accent-color'
+});</div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <div class="demo-section">
+                    <h2 class="demo-title">See It In Action</h2>
+                    <p class="demo-description">
+                        Click the button below to activate the MedPharm AI widget on this page and try it out!
+                    </p>
+                    <button class="activate-button" onclick="activateWidget()">
+                        <i class="fas fa-play"></i>
+                        Activate Widget Demo
+                    </button>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2 class="section-title">🚀 Pricing Coming Soon</h2>
+                <p class="section-subtitle">
+                    We're currently in demo phase. Pricing plans will be available shortly.
+                </p>
+                
+                <div style="text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; color: white; margin: 40px 0;">
+                    <div style="font-size: 4rem; margin-bottom: 20px;">🎯</div>
+                    <h3 style="font-size: 2rem; margin-bottom: 15px; color: white;">Demo Phase Active</h3>
+                    <p style="font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9;">
+                        Experience the full capabilities during our demo period.<br>
+                        Competitive pricing plans launching soon!
+                    </p>
+                    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px 25px; border-radius: 10px; backdrop-filter: blur(10px);">
+                            ✨ Free Demo Access
+                        </div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px 25px; border-radius: 10px; backdrop-filter: blur(10px);">
+                            🏥 Healthcare Focused
+                        </div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 15px 25px; border-radius: 10px; backdrop-filter: blur(10px);">
+                            💊 Full Features
+                        </div>
+                    </div>
+                    <button style="margin-top: 30px; padding: 15px 30px; background: white; color: #667eea; border: none; border-radius: 10px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease;" 
+                            onmouseover="this.style.transform='scale(1.05)'" 
+                            onmouseout="this.style.transform='scale(1)'">
+                        Request Early Access
+                    </button>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <div class="container">
+            <div class="footer-content">
+                Ready to enhance your website with AI-powered medical assistance?
+            </div>
+            <div class="footer-links">
+                <a href="#contact">Contact Sales</a>
+                <a href="#docs">Documentation</a>
+                <a href="#support">Support</a>
+                <a href="#privacy">Privacy Policy</a>
+            </div>
+            <div style="color: #a0aec0; font-size: 0.9rem;">
+                © 2025 MedPharm AI. All rights reserved.
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function copyCode(elementId) {
+            const codeElement = document.getElementById(elementId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                // Show success feedback
+                const button = codeElement.parentElement.querySelector('.copy-button');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                button.style.background = '#48bb78';
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.style.background = '#4a5568';
+                }, 2000);
+            });
+        }
+        
+        function activateWidget() {
+            // Simulate loading the widget
+            const button = document.querySelector('.activate-button');
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading Widget...';
+            button.disabled = true;
+            
+            // Create and inject the widget manually for demo
+            setTimeout(() => {
+                createDemoWidget();
+                button.innerHTML = '<i class="fas fa-check"></i> Widget Activated!';
+                button.style.background = '#48bb78';
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    button.style.background = '';
+                }, 3000);
+            }, 2000);
+        }
+        
+        function createDemoWidget() {
+            // Create a simple demo widget
+            const widget = document.createElement('div');
+            widget.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                z-index: 10000;
+                font-family: 'Inter', sans-serif;
+            `;
+            
+            widget.innerHTML = `
+                <div style="
+                    width: 60px;
+                    height: 60px;
+                    border-radius: 50%;
+                    background: linear-gradient(135deg, #667eea 0%, #4facfe 100%);
+                    border: none;
+                    cursor: pointer;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-size: 24px;
+                    transition: all 0.3s ease;
+                " onclick="openDemoChat()">
+                    <i class="fas fa-pills"></i>
+                </div>
+            `;
+            
+            document.body.appendChild(widget);
+            
+            // Add hover effect
+            const trigger = widget.querySelector('div');
+            trigger.onmouseenter = () => {
+                trigger.style.transform = 'scale(1.1)';
+                trigger.style.boxShadow = '0 6px 25px rgba(0,0,0,0.25)';
+            };
+            trigger.onmouseleave = () => {
+                trigger.style.transform = 'scale(1)';
+                trigger.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+            };
+        }
+        
+        function openDemoChat() {
+            // Show the overlay chatbot
+            showChatOverlay();
+        }
+
+        function showChatOverlay() {
+            // Create overlay if it doesn't exist
+            let overlay = document.getElementById('chat-overlay');
+            if (!overlay) {
+                createChatOverlay();
+                overlay = document.getElementById('chat-overlay');
+            }
+            
+            overlay.style.display = 'flex';
+            setTimeout(() => {
+                overlay.style.opacity = '1';
+                overlay.querySelector('.chat-widget').style.transform = 'scale(1)';
+            }, 10);
+            
+            // Focus on input
+            setTimeout(() => {
+                const input = overlay.querySelector('#overlayMessageInput');
+                if (input) input.focus();
+            }, 300);
+        }
+
+        function hideChatOverlay() {
+            const overlay = document.getElementById('chat-overlay');
+            if (overlay) {
+                overlay.style.opacity = '0';
+                overlay.querySelector('.chat-widget').style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        function createChatOverlay() {
+            const overlay = document.createElement('div');
+            overlay.id = 'chat-overlay';
+            overlay.innerHTML = `
+                <div class="chat-widget">
+                    <div class="chat-header">
+                        <div class="header-content">
+                            <h1 class="header-title">
+                                🩺 MedPharm AI Assistant
+                            </h1>
+                            <p class="header-subtitle">
+                                <span class="status-indicator"></span>
+                                Professional Medical Support System
+                            </p>
+                        </div>
+                        <button class="close-button" onclick="hideChatOverlay()">
+                            ✕
+                        </button>
+                    </div>
+
+                    <div class="quick-questions">
+                        <h3>🚀 Quick Actions - Choose Your Query Type:</h3>
+                        <div class="questions-grid">
+                            <div class="feature-button" id="overlayInteractionBtn">
+                                <div class="feature-icon">🔄</div>
+                                <div class="feature-text">Drug Interaction Check</div>
+                            </div>
+                            <div class="feature-button" id="overlayDosageBtn">
+                                <div class="feature-icon">📏</div>
+                                <div class="feature-text">Dosage Calculator</div>
+                            </div>
+                            <div class="feature-button" id="overlaySafetyBtn">
+                                <div class="feature-icon">⚠️</div>
+                                <div class="feature-text">Safety & Compliance</div>
+                            </div>
+                            <div class="feature-button" id="overlayCustomBtn">
+                                <div class="feature-icon">💬</div>
+                                <div class="feature-text">Ask Anything</div>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Input Forms -->
+                        <div id="overlayInteractionForm" class="input-form" style="display: none;">
+                            <h4>🔄 Drug Interaction Checker
+                                <button class="form-close" onclick="hideAllOverlayForms()">×</button>
+                            </h4>
+                            <div class="form-row">
+                                <input type="text" id="overlayDrug1" placeholder="Enter first drug (e.g., Warfarin)" />
+                                <input type="text" id="overlayDrug2" placeholder="Enter second drug (e.g., Ibuprofen)" />
+                            </div>
+                            <div class="example-links">
+                                <span>Quick examples: </span>
+                                <a href="#" onclick="fillOverlayInteraction('Warfarin', 'Ibuprofen')">Warfarin + Ibuprofen</a>
+                                <a href="#" onclick="fillOverlayInteraction('Metformin', 'Alcohol')">Metformin + Alcohol</a>
+                                <a href="#" onclick="fillOverlayInteraction('Lisinopril', 'Potassium')">Lisinopril + Potassium</a>
+                            </div>
+                            <button onclick="checkOverlayInteraction()" class="check-button">Check Interactions</button>
+                        </div>
+
+                        <div id="overlayDosageForm" class="input-form" style="display: none;">
+                            <h4>📏 Dosage Calculator
+                                <button class="form-close" onclick="hideAllOverlayForms()">×</button>
+                            </h4>
+                            <div class="form-row">
+                                <input type="text" id="overlayMedication" placeholder="Enter medication (e.g., Acetaminophen)" />
+                                <input type="number" id="overlayWeight" placeholder="Weight (kg)" />
+                                <select id="overlayAgeGroup">
+                                    <option value="">Select age group</option>
+                                    <option value="pediatric">Pediatric (2-12 years)</option>
+                                    <option value="adult">Adult (18+ years)</option>
+                                    <option value="elderly">Elderly (65+ years)</option>
+                                </select>
+                            </div>
+                            <div class="example-links">
+                                <span>Quick examples: </span>
+                                <a href="#" onclick="fillOverlayDosage('Acetaminophen', '70', 'adult')">Acetaminophen 70kg Adult</a>
+                                <a href="#" onclick="fillOverlayDosage('Amoxicillin', '25', 'pediatric')">Amoxicillin 25kg Child</a>
+                                <a href="#" onclick="fillOverlayDosage('Ibuprofen', '60', 'elderly')">Ibuprofen 60kg Elderly</a>
+                            </div>
+                            <button onclick="calculateOverlayDosage()" class="check-button">Calculate Dosage</button>
+                        </div>
+
+                        <div id="overlaySafetyForm" class="input-form" style="display: none;">
+                            <h4>⚠️ Safety & Compliance Check
+                                <button class="form-close" onclick="hideAllOverlayForms()">×</button>
+                            </h4>
+                            <div class="form-row">
+                                <input type="text" id="overlaySafetyDrug" placeholder="Enter medication (e.g., Aspirin)" />
+                                <select id="overlayPatientType">
+                                    <option value="">Select patient type</option>
+                                    <option value="general">General population</option>
+                                    <option value="pregnant">Pregnant women</option>
+                                    <option value="pediatric">Children</option>
+                                    <option value="elderly">Elderly patients</option>
+                                    <option value="kidney">Kidney disease</option>
+                                    <option value="liver">Liver disease</option>
+                                </select>
+                            </div>
+                            <div class="example-links">
+                                <span>Quick examples: </span>
+                                <a href="#" onclick="fillOverlaySafety('Aspirin', 'pregnant')">Aspirin in Pregnancy</a>
+                                <a href="#" onclick="fillOverlaySafety('Metformin', 'kidney')">Metformin + Kidney Disease</a>
+                                <a href="#" onclick="fillOverlaySafety('Warfarin', 'elderly')">Warfarin in Elderly</a>
+                            </div>
+                            <button onclick="checkOverlaySafety()" class="check-button">Check Safety Profile</button>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages" id="overlayChatMessages">
+                        <div class="welcome-message">
+                            <div class="welcome-emoji">🤖💊</div>
+                            <h2>Medical AI Assistant Ready! 🩺</h2>
+                            <p>Drug interactions • Dosage calculations • Safety profiles</p>
+                            <p><em>Note: I may make errors - please verify important information.</em></p>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input">
+                        <div class="input-container">
+                            <textarea id="overlayMessageInput" placeholder="💬 Ask about medications, dosages, interactions... (Press Enter to send)" rows="1"></textarea>
+                        </div>
+                        <button id="overlaySendButton" onclick="sendOverlayMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Add overlay styles
+            const style = document.createElement('style');
+            style.textContent = `
+                #chat-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                    backdrop-filter: blur(5px);
+                    z-index: 10000;
+                    display: none;
+                    align-items: center;
+                    justify-content: center;
+                    opacity: 0;
+                    transition: all 0.3s ease;
+                    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                }
+
+                .chat-widget {
+                    background: rgba(255, 255, 255, 0.95);
+                    backdrop-filter: blur(20px);
+                    border-radius: 24px;
+                    box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+                    width: 90%;
+                    max-width: 600px;
+                    height: 80vh;
+                    max-height: 700px;
+                    display: flex;
+                    flex-direction: column;
+                    overflow: hidden;
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    transform: scale(0.95);
+                    transition: all 0.3s ease;
+                }
+
+                .chat-widget .chat-header {
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    padding: 16px 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    position: relative;
+                    overflow: hidden;
+                    flex-shrink: 0;
+                }
+
+                .chat-widget .header-content {
+                    flex: 1;
+                }
+
+                .chat-widget .header-title {
+                    font-size: 1.3rem;
+                    font-weight: 700;
+                    margin-bottom: 4px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+                }
+
+                .chat-widget .header-subtitle {
+                    font-size: 0.8rem;
+                    font-weight: 400;
+                    opacity: 0.95;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+                }
+
+                .close-button {
+                    background: rgba(255, 255, 255, 0.2);
+                    border: none;
+                    color: white;
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.2s ease;
+                    font-size: 16px;
+                    font-weight: 500;
+                    flex-shrink: 0;
+                }
+
+                .close-button:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: scale(1.05);
+                }
+
+                .chat-widget .status-indicator {
+                    width: 6px;
+                    height: 6px;
+                    background: #48bb78;
+                    border-radius: 50%;
+                    animation: pulse 2s infinite;
+                    flex-shrink: 0;
+                }
+
+                @keyframes pulse {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.5; }
+                }
+
+                .chat-widget .quick-questions {
+                    background: white;
+                    padding: 8px 15px;
+                    border-bottom: 1px solid #e2e8f0;
+                    flex-shrink: 0;
+                }
+
+                .chat-widget .quick-questions h3 {
+                    font-size: 0.75rem;
+                    color: #718096;
+                    margin-bottom: 6px;
+                    font-weight: 500;
+                }
+
+                .chat-widget .questions-grid {
+                    display: flex;
+                    gap: 6px;
+                    flex-wrap: wrap;
+                }
+
+                .chat-widget .feature-button {
+                    background: #f8fafc;
+                    border: 2px solid #e2e8f0;
+                    border-radius: 12px;
+                    padding: 6px 8px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 3px;
+                    color: #2d3748;
+                    min-width: 85px;
+                    text-align: center;
+                }
+
+                .chat-widget .feature-button:hover {
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+                }
+
+                .chat-widget .feature-button.active {
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+                }
+
+                .chat-widget .feature-icon {
+                    font-size: 1rem;
+                }
+
+                .chat-widget .feature-text {
+                    font-size: 0.65rem;
+                    font-weight: 500;
+                    line-height: 1.1;
+                }
+
+                .chat-widget .input-form {
+                    position: absolute;
+                    top: 80px;
+                    left: 15px;
+                    right: 15px;
+                    z-index: 1000;
+                    background: white;
+                    border-radius: 12px;
+                    padding: 15px;
+                    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+                    border: 1px solid #e2e8f0;
+                    backdrop-filter: blur(10px);
+                }
+
+                .chat-widget .input-form h4 {
+                    margin: 0 0 10px 0;
+                    font-size: 0.9rem;
+                    color: #2d3748;
+                    font-weight: 600;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                }
+
+                .chat-widget .form-close {
+                    background: #f1f5f9;
+                    border: none;
+                    color: #64748b;
+                    width: 24px;
+                    height: 24px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 14px;
+                    transition: all 0.2s ease;
+                }
+
+                .chat-widget .form-close:hover {
+                    background: #e2e8f0;
+                    color: #475569;
+                }
+
+                .chat-widget .form-row {
+                    display: flex;
+                    gap: 8px;
+                    margin-bottom: 10px;
+                    flex-wrap: wrap;
+                }
+
+                .chat-widget .form-row input,
+                .chat-widget .form-row select {
+                    flex: 1;
+                    min-width: 120px;
+                    padding: 8px 10px;
+                    border: 2px solid #e2e8f0;
+                    border-radius: 6px;
+                    font-size: 0.85rem;
+                    outline: none;
+                    transition: border-color 0.3s ease;
+                }
+
+                .chat-widget .form-row input:focus,
+                .chat-widget .form-row select:focus {
+                    border-color: #667eea;
+                }
+
+                .chat-widget .example-links {
+                    margin-bottom: 10px;
+                    font-size: 0.7rem;
+                    color: #718096;
+                }
+
+                .chat-widget .example-links a {
+                    color: #667eea;
+                    text-decoration: none;
+                    margin-right: 10px;
+                    cursor: pointer;
+                }
+
+                .chat-widget .example-links a:hover {
+                    text-decoration: underline;
+                }
+
+                .chat-widget .check-button {
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 6px;
+                    font-size: 0.8rem;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-weight: 500;
+                    width: 100%;
+                }
+
+                .chat-widget .check-button:hover {
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+                }
+
+                .chat-widget .chat-messages {
+                    flex: 1;
+                    min-height: 200px;
+                    padding: 20px;
+                    overflow-y: auto;
+                    background: #f8fafc;
+                    scrollbar-width: thin;
+                    scrollbar-color: #cbd5e0 transparent;
+                }
+
+                .chat-widget .chat-messages::-webkit-scrollbar {
+                    width: 4px;
+                }
+
+                .chat-widget .chat-messages::-webkit-scrollbar-thumb {
+                    background: #cbd5e0;
+                    border-radius: 2px;
+                }
+
+                .chat-widget .welcome-message {
+                    text-align: center;
+                    padding: 30px 15px;
+                    color: #718096;
+                }
+
+                .chat-widget .welcome-emoji {
+                    font-size: 2.5rem;
+                    margin-bottom: 12px;
+                }
+
+                .chat-widget .welcome-message h2 {
+                    font-size: 1.3rem;
+                    margin-bottom: 8px;
+                    color: #2d3748;
+                }
+
+                .chat-widget .welcome-message p {
+                    font-size: 0.9rem;
+                    margin-bottom: 4px;
+                }
+
+                .chat-widget .message {
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: flex-end;
+                    animation: messageSlide 0.4s ease-out;
+                }
+
+                @keyframes messageSlide {
+                    from { opacity: 0; transform: translateY(15px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+
+                .chat-widget .user-message {
+                    justify-content: flex-end;
+                }
+
+                .chat-widget .bot-message {
+                    justify-content: flex-start;
+                }
+
+                .chat-widget .message-avatar {
+                    width: 28px;
+                    height: 28px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 0.9rem;
+                    margin: 0 8px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                }
+
+                .chat-widget .user-avatar {
+                    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                    color: white;
+                    order: 2;
+                }
+
+                .chat-widget .bot-avatar {
+                    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                    color: white;
+                    order: 1;
+                }
+
+                .chat-widget .message-content {
+                    max-width: 75%;
+                    padding: 12px 16px;
+                    border-radius: 16px;
+                    font-size: 0.9rem;
+                    line-height: 1.4;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                    word-wrap: break-word;
+                }
+
+                .chat-widget .user-message .message-content {
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    border-bottom-right-radius: 4px;
+                    order: 1;
+                }
+
+                .chat-widget .bot-message .message-content {
+                    background: white;
+                    color: #2d3748;
+                    border-bottom-left-radius: 4px;
+                    border: 1px solid #e2e8f0;
+                    order: 2;
+                }
+
+                .chat-widget .chat-input {
+                    padding: 20px;
+                    background: white;
+                    border-top: 1px solid #e2e8f0;
+                    display: flex;
+                    gap: 12px;
+                    align-items: flex-end;
+                }
+
+                .chat-widget .input-container {
+                    flex: 1;
+                }
+
+                .chat-widget #overlayMessageInput {
+                    width: 100%;
+                    padding: 12px 16px;
+                    border: 2px solid #e2e8f0;
+                    border-radius: 20px;
+                    font-size: 0.9rem;
+                    font-family: inherit;
+                    outline: none;
+                    transition: all 0.3s ease;
+                    resize: none;
+                    min-height: 40px;
+                    max-height: 100px;
+                }
+
+                .chat-widget #overlayMessageInput:focus {
+                    border-color: #667eea;
+                    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+                }
+
+                .chat-widget #overlaySendButton {
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    border: none;
+                    padding: 12px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    font-size: 1rem;
+                    transition: all 0.3s ease;
+                    width: 40px;
+                    height: 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+                }
+
+                .chat-widget #overlaySendButton:hover:not(:disabled) {
+                    transform: translateY(-1px) scale(1.05);
+                    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+                }
+
+                .chat-widget .typing-indicator {
+                    display: flex;
+                    align-items: center;
+                    padding: 12px 16px;
+                    background: white;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 16px;
+                    border-bottom-left-radius: 4px;
+                    max-width: 75%;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                }
+
+                .chat-widget .typing-dots {
+                    display: flex;
+                    gap: 3px;
+                    margin-right: 6px;
+                }
+
+                .chat-widget .typing-dot {
+                    width: 6px;
+                    height: 6px;
+                    border-radius: 50%;
+                    background: #718096;
+                    animation: typingDot 1.4s infinite;
+                }
+
+                .chat-widget .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+                .chat-widget .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+                @keyframes typingDot {
+                    0%, 60%, 100% { transform: scale(1); opacity: 0.7; }
+                    30% { transform: scale(1.2); opacity: 1; }
+                }
+
+                @media (max-width: 768px) {
+                    .chat-widget {
+                        width: 95%;
+                        height: 85vh;
+                        max-height: unset;
+                    }
+                    
+                    .chat-widget .chat-header {
+                        padding: 12px 16px;
+                    }
+                    
+                    .chat-widget .header-title {
+                        font-size: 1.1rem;
+                        gap: 6px;
+                        margin-bottom: 2px;
+                    }
+                    
+                    .chat-widget .header-subtitle {
+                        font-size: 0.7rem;
+                        gap: 4px;
+                    }
+
+                    .chat-widget .questions-grid {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 6px;
+                    }
+                    
+                    .chat-widget .feature-button {
+                        min-width: unset;
+                        font-size: 0.6rem;
+                        padding: 5px 6px;
+                    }
+
+                    .chat-widget .feature-icon {
+                        font-size: 0.9rem;
+                    }
+
+                    .chat-widget .feature-text {
+                        font-size: 0.6rem;
+                    }
+
+                    .chat-widget .input-form {
+                        left: 10px;
+                        right: 10px;
+                        top: 70px;
+                    }
+
+                    .chat-widget .form-row {
+                        flex-direction: column;
+                        gap: 6px;
+                    }
+
+                    .chat-widget .form-row input,
+                    .chat-widget .form-row select {
+                        min-width: unset;
+                        font-size: 0.8rem;
+                    }
+
+                    .chat-widget .example-links {
+                        font-size: 0.65rem;
+                    }
+
+                    .chat-widget .check-button {
+                        font-size: 0.75rem;
+                        padding: 6px 12px;
+                    }
+
+                    .close-button {
+                        width: 26px;
+                        height: 26px;
+                        font-size: 14px;
+                    }
+                }
+            `;
+            
+            document.head.appendChild(style);
+            document.body.appendChild(overlay);
+
+            // Add enter key functionality
+            const input = overlay.querySelector('#overlayMessageInput');
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendOverlayMessage();
+                }
+            });
+
+            // Auto-resize textarea
+            input.addEventListener('input', () => {
+                input.style.height = 'auto';
+                input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+            });
+
+            // Add event listeners for overlay feature buttons
+            setTimeout(() => {
+                const interactionBtn = overlay.querySelector('#overlayInteractionBtn');
+                const dosageBtn = overlay.querySelector('#overlayDosageBtn');
+                const safetyBtn = overlay.querySelector('#overlaySafetyBtn');
+                const customBtn = overlay.querySelector('#overlayCustomBtn');
+
+                if (interactionBtn) interactionBtn.addEventListener('click', () => showOverlayForm('interaction'));
+                if (dosageBtn) dosageBtn.addEventListener('click', () => showOverlayForm('dosage'));
+                if (safetyBtn) safetyBtn.addEventListener('click', () => showOverlayForm('safety'));
+                if (customBtn) customBtn.addEventListener('click', () => {
+                    hideAllOverlayForms();
+                    input.focus();
+                });
+            }, 100);
+        }
+
+        function showOverlayForm(type) {
+            hideAllOverlayForms();
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.feature-button').forEach(btn => btn.classList.remove('active'));
+            
+            // Show the selected form and activate button
+            if (type === 'interaction') {
+                document.getElementById('overlayInteractionForm').style.display = 'block';
+                document.getElementById('overlayInteractionBtn').classList.add('active');
+            } else if (type === 'dosage') {
+                document.getElementById('overlayDosageForm').style.display = 'block';
+                document.getElementById('overlayDosageBtn').classList.add('active');
+            } else if (type === 'safety') {
+                document.getElementById('overlaySafetyForm').style.display = 'block';
+                document.getElementById('overlaySafetyBtn').classList.add('active');
+            }
+        }
+
+        function hideAllOverlayForms() {
+            const forms = ['overlayInteractionForm', 'overlayDosageForm', 'overlaySafetyForm'];
+            forms.forEach(formId => {
+                const form = document.getElementById(formId);
+                if (form) form.style.display = 'none';
+            });
+            document.querySelectorAll('.feature-button').forEach(btn => btn.classList.remove('active'));
+        }
+
+        // Form filling functions for overlay
+        function fillOverlayInteraction(drug1, drug2) {
+            document.getElementById('overlayDrug1').value = drug1;
+            document.getElementById('overlayDrug2').value = drug2;
+        }
+
+        function fillOverlayDosage(medication, weight, ageGroup) {
+            document.getElementById('overlayMedication').value = medication;
+            document.getElementById('overlayWeight').value = weight;
+            document.getElementById('overlayAgeGroup').value = ageGroup;
+        }
+
+        function fillOverlaySafety(drug, patientType) {
+            document.getElementById('overlaySafetyDrug').value = drug;
+            document.getElementById('overlayPatientType').value = patientType;
+        }
+
+        // Form submission functions for overlay
+        function checkOverlayInteraction() {
+            const drug1 = document.getElementById('overlayDrug1').value.trim();
+            const drug2 = document.getElementById('overlayDrug2').value.trim();
+            
+            if (!drug1 || !drug2) {
+                alert('Please enter both drugs to check interactions.');
+                return;
+            }
+            
+            const question = `Check drug interactions between ${drug1} and ${drug2}. Provide detailed interaction analysis with severity levels, risks, and safer alternatives.`;
+            
+            hideAllOverlayForms();
+            const input = document.getElementById('overlayMessageInput');
+            input.value = question;
+            sendOverlayMessage();
+        }
+
+        function calculateOverlayDosage() {
+            const medication = document.getElementById('overlayMedication').value.trim();
+            const weight = document.getElementById('overlayWeight').value.trim();
+            const ageGroup = document.getElementById('overlayAgeGroup').value;
+            
+            if (!medication) {
+                alert('Please enter a medication name.');
+                return;
+            }
+            
+            let question = `Calculate dosage for ${medication}`;
+            if (weight) question += ` for ${weight}kg patient`;
+            if (ageGroup) question += ` in ${ageGroup} age group`;
+            question += `. Show step-by-step calculation, dosing frequency, and safety limits.`;
+            
+            hideAllOverlayForms();
+            const input = document.getElementById('overlayMessageInput');
+            input.value = question;
+            sendOverlayMessage();
+        }
+
+        function checkOverlaySafety() {
+            const drug = document.getElementById('overlaySafetyDrug').value.trim();
+            const patientType = document.getElementById('overlayPatientType').value;
+            
+            if (!drug) {
+                alert('Please enter a medication name.');
+                return;
+            }
+            
+            let question = `Provide safety profile and contraindications for ${drug}`;
+            if (patientType && patientType !== 'general') {
+                question += ` in ${patientType} patients`;
+            }
+            question += `. Include contraindications, warnings, and HIPAA-compliant counseling points.`;
+            
+            hideAllOverlayForms();
+            const input = document.getElementById('overlayMessageInput');
+            input.value = question;
+            sendOverlayMessage();
+        }
+
+        async function sendOverlayMessage() {
+            const input = document.getElementById('overlayMessageInput');
+            const sendButton = document.getElementById('overlaySendButton');
+            const chatMessages = document.getElementById('overlayChatMessages');
+            
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Remove welcome message
+            const welcomeMessage = chatMessages.querySelector('.welcome-message');
+            if (welcomeMessage) {
+                welcomeMessage.style.opacity = '0';
+                setTimeout(() => welcomeMessage.remove(), 200);
+            }
+
+            // Add user message
+            addOverlayMessage(message, true);
+            input.value = '';
+            input.style.height = 'auto';
+            sendButton.disabled = true;
+            
+            // Show typing indicator
+            showOverlayTyping();
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+
+                const data = await response.json();
+                hideOverlayTyping();
+                
+                setTimeout(() => {
+                    if (response.ok) {
+                        addOverlayMessage(data.response);
+                    } else {
+                        addOverlayMessage('❌ ' + (data.error || 'An error occurred'), false, true);
+                    }
+                }, 300);
+                
+            } catch (error) {
+                hideOverlayTyping();
+                setTimeout(() => {
+                    addOverlayMessage('🌐 Network error. Please try again.', false, true);
+                }, 300);
+            }
+
+            sendButton.disabled = false;
+            input.focus();
+        }
+
+        function addOverlayMessage(content, isUser = false, isError = false) {
+            const chatMessages = document.getElementById('overlayChatMessages');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            
+            const avatarDiv = document.createElement('div');
+            avatarDiv.className = `message-avatar ${isUser ? 'user-avatar' : 'bot-avatar'}`;
+            avatarDiv.innerHTML = isUser ? '😊' : '🤖';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = `message-content ${isError ? 'error-message' : ''}`;
+            
+            if (isUser) {
+                contentDiv.textContent = content;
+            } else {
+                let enhancedContent = content;
+                if (!isError) {
+                    if (/dosage|dose|amount/i.test(content)) enhancedContent = '📏 ' + content;
+                    else if (/side effect|adverse|reaction/i.test(content)) enhancedContent = '⚠️ ' + content;
+                    else if (/interaction|combine|together/i.test(content)) enhancedContent = '🔄 ' + content;
+                    else if (/storage|store|temperature/i.test(content)) enhancedContent = '🌡️ ' + content;
+                    else if (/antibiotic|bacteria|infection/i.test(content)) enhancedContent = '🦠 ' + content;
+                    else enhancedContent = '💊 ' + content;
+                }
+                contentDiv.innerHTML = parseMarkdownOverlay(enhancedContent);
+            }
+            
+            messageDiv.appendChild(avatarDiv);
+            messageDiv.appendChild(contentDiv);
+            chatMessages.appendChild(messageDiv);
+            
+            chatMessages.scrollTo({ top: chatMessages.scrollHeight, behavior: 'smooth' });
+        }
+
+        function showOverlayTyping() {
+            const chatMessages = document.getElementById('overlayChatMessages');
+            
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot-message';
+            typingDiv.id = 'overlay-typing-indicator';
+            
+            const avatarDiv = document.createElement('div');
+            avatarDiv.className = 'message-avatar bot-avatar';
+            avatarDiv.innerHTML = '🤔';
+            
+            const typingContent = document.createElement('div');
+            typingContent.className = 'typing-indicator';
+            typingContent.innerHTML = `
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+                <span>🧠 AI is analyzing...</span>
+            `;
+            
+            typingDiv.appendChild(avatarDiv);
+            typingDiv.appendChild(typingContent);
+            chatMessages.appendChild(typingDiv);
+            
+            chatMessages.scrollTo({ top: chatMessages.scrollHeight, behavior: 'smooth' });
+        }
+
+        function hideOverlayTyping() {
+            const typingIndicator = document.getElementById('overlay-typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.style.opacity = '0';
+                setTimeout(() => typingIndicator.remove(), 200);
+            }
+        }
+
+        function parseMarkdownOverlay(text) {
+            return text
+                .replace(/```([\s\S]*?)```/g, '<div style="background: rgba(0,0,0,0.05); padding: 12px; border-radius: 8px; margin: 8px 0; font-family: monospace; font-size: 0.85rem;"><pre style="margin: 0; white-space: pre-wrap;">$1</pre></div>')
+                .replace(/`([^`]+)`/g, '<code style="background: rgba(0,0,0,0.1); padding: 2px 4px; border-radius: 3px; font-family: monospace; font-size: 0.85rem;">$1</code>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/^### (.*$)/gm, '<h3 style="margin: 8px 0 4px 0; font-size: 1rem;">$1</h3>')
+                .replace(/^## (.*$)/gm, '<h2 style="margin: 8px 0 4px 0; font-size: 1.1rem;">$1</h2>')
+                .replace(/^# (.*$)/gm, '<h1 style="margin: 8px 0 4px 0; font-size: 1.2rem;">$1</h1>')
+                .replace(/^\* (.*$)/gm, '<li style="margin: 2px 0;">$1</li>')
+                .replace(/^- (.*$)/gm, '<li style="margin: 2px 0;">$1</li>')
+                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" style="color: #3182ce; text-decoration: none;">$1</a>')
+                .replace(/\n/g, '<br>')
+                .replace(/(<li>.*<\/li>)/g, '<ul style="margin: 4px 0; padding-left: 16px;">$1</ul>');
+        }
+    </script>
+</body>
+</html> 
